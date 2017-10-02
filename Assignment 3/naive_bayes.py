@@ -35,8 +35,6 @@ class MultinomialNaiveBayes():
         
     def predict(self, test_labels, test_matrix):
         num_test_docs = test_labels.shape[0]
-#         log_p_pos = np.log(test_matrix.dot(self.py_pos.T)) + np.log(self.phi_pos)
-#         log_p_neg = np.log(test_matrix.dot(self.py_neg.T)) + np.log(1 - self.phi_pos)
         log_p_pos = test_matrix.dot(np.log(self.py_pos.T)) + np.log(self.phi_pos)
         log_p_neg = test_matrix.dot(np.log(self.py_neg.T)) + np.log(1 - self.phi_pos)
         
