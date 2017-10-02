@@ -149,21 +149,26 @@ def compress_image(B, centroids):
     
 def main():
     A = misc.imread('pa3data/b_small.tiff', mode='RGB')
-    centroids = kmeans(A, n_clusters=16)
-    # print(centroids)
-    B = misc.imread('pa3data/b.tif', mode='RGB')
-    compress_image(B, centroids)
     
-    plt.imshow(B)
-    # plt.show()
-    plt.savefig('figures/kmeans.png')
-    
-    for n_clusters in range(2, 16):
+    for n_clusters in range(1, 17):
         centroids = kmeans(A, n_clusters)
         print('Centroid for clusters {0} are {1}'.format(n_clusters, centroids))
+        B = misc.imread('pa3data/b.tif', mode='RGB')
         compress_image(B, centroids)
         plt.imshow(B)
+        plt.suptitle('K = {0}'.format(n_clusters))
         plt.savefig('figures/kmeans' + str(n_clusters) + '.png')
-      
+    
+    
+    n_clusters = 5
+    for i in range(4):
+        centroids = kmeans(A, n_clusters)
+        print('Centroid for clusters {0} are {1}'.format(n_clusters, centroids))
+        B = misc.imread('pa3data/b.tif', mode='RGB')
+        compress_image(B, centroids)
+        plt.imshow(B)
+        plt.suptitle('Attempt {0} with k = {1}'.format(i+1, n_clusters))
+        plt.savefig('figures/kmeans_' + str(n_clusters) + '_' + str(i+1) + '.png')
+    
 if __name__ == '__main__':
     main()
