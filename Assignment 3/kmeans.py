@@ -24,48 +24,49 @@ def init_centroids(A, n_clusters):
     centroids : array-like
         A randomly initialized centroids ranging from 0 to 255
     """
-    centroids = A[np.random.choice(A.shape[0], n_clusters, replace=False), 
+    centroids = A[np.random.choice(A.shape[0], n_clusters, replace=False),
                   np.random.choice(A.shape[1], n_clusters, replace=False), :]
     
     return centroids
 
 def init_cluster(centroids):
-	"""Initialize cluters
+    """Initialize cluters
 
-	Parameters
-	----------
-	centroids : 2-d array
-		List of centroids
+    Parameters
+    ----------
+    centroids : 2-d array
+        List of centroids
 
-	Returns
-	-------
-	clusters : dictionary
-		Mapping from centroids to a list of points in clusters
-	"""
+    Returns
+    -------
+    clusters : dictionary
+        Mapping from centroids to a list of points in clusters
+    """
     clusters = {}
+    
     for c in range(centroids.shape[0]):
         clusters[c] = []
     return clusters
     
 def assign_cluster(A, clusters, centroids):
-	"""Assign nearest cluster for all pixels
-	
-	Parameters
-	----------
-	A : RBG matrix representation for image
+    """Assign nearest cluster for all pixels
+    
+    Parameters
+    ----------
+    A : RBG matrix representation for image
 
-	clusters : dictionary
-		List of centroids associated with their points in clusters
+    clusters : dictionary
+        List of centroids associated with their points in clusters
 
-	centroids : 2-d array
-		Current centroids
-	"""
+    centroids : 2-d array
+        Current centroids
+    """
     # Euclid distance from given point to the centroids
     for i in range(A.shape[0]):
         for j in range(A.shape[1]):
 #             assign_cluster(clusters, centroids, A[i][j])
             pixel = A[i][j]
-            distance = np.sum((centroids-pixel)**2, axis=1)
+            distance = np.sum((centroids - pixel) ** 2, axis=1)
             # Assign closest cluster for the given pixel
             min_index = np.argmin(distance)
             clusters[min_index].append(pixel)
@@ -104,7 +105,7 @@ def kmeans(A, n_clusters, max_iter=100, tolerance=1e-5):
         Converged centroids
     """
     centroids = init_centroids(A, n_clusters)  # default centroids
-    clusters = init_cluster(centroids) #np.zeros((A.shape[0], A.shape[1], 1))    # store the index of centroids for each pixel
+    clusters = init_cluster(centroids)  # np.zeros((A.shape[0], A.shape[1], 1))    # store the index of centroids for each pixel
     ite = 1
     while(ite <= max_iter):
         # print('Iteration {0}'.format(ite))
@@ -112,7 +113,7 @@ def kmeans(A, n_clusters, max_iter=100, tolerance=1e-5):
         update_centroids(clusters, centroids)
         new_centroids = update_centroids(clusters, centroids)
         
-        err = np.sqrt(np.sum((new_centroids-centroids)**2))
+        err = np.sqrt(np.sum((new_centroids - centroids) ** 2))
         # print('Error = {0}\n'.format(err))
         if err < tolerance:
             print('Converged after {0} iterations!'.format(ite))
@@ -141,7 +142,7 @@ def compress_image(B, centroids):
     for i in range(B.shape[0]):
         for j in range(B.shape[1]):
             pixel = B[i][j]
-            distance = np.sum((centroids-pixel)**2, axis=1)
+            distance = np.sum((centroids - pixel) ** 2, axis=1)
             # Assign closest cluster for the given pixel
             min_index = np.argmin(distance)
             B[i][j] = centroids[min_index]
@@ -154,7 +155,7 @@ def main():
     compress_image(B, centroids)
     
     plt.imshow(B)
-    #plt.show()
+    # plt.show()
     plt.savefig('figures/kmeans.png')
     
     for n_clusters in range(2, 16):
